@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BookStoreModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="BookStoreEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Purchases" EntityType="BookStoreModel.Purchase" />
+    <EntitySet Name="Books" EntityType="BookStoreModel.Book" />
+    <EntitySet Name="Users" EntityType="BookStoreModel.User" />
+    <EntitySet Name="BookMovements" EntityType="BookStoreModel.BookMovement" />
+    <EntitySet Name="Statuses" EntityType="BookStoreModel.Status" />
+    <EntitySet Name="BookMovementStatuses" EntityType="BookStoreModel.BookMovementStatus" />
+    <AssociationSet Name="FK_BookMovements_Books" Association="BookStoreModel.FK_BookMovements_Books">
+      <End Role="Book" EntitySet="Books" />
+      <End Role="BookMovement" EntitySet="BookMovements" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BookMovements_Users" Association="BookStoreModel.FK_BookMovements_Users">
+      <End Role="User" EntitySet="Users" />
+      <End Role="BookMovement" EntitySet="BookMovements" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BookMovementStatuses_BookMovements" Association="BookStoreModel.FK_BookMovementStatuses_BookMovements">
+      <End Role="BookMovement" EntitySet="BookMovements" />
+      <End Role="BookMovementStatus" EntitySet="BookMovementStatuses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BookMovementStatuses_Statuses" Association="BookStoreModel.FK_BookMovementStatuses_Statuses">
+      <End Role="Status" EntitySet="Statuses" />
+      <End Role="BookMovementStatus" EntitySet="BookMovementStatuses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BookMovements_Statuses" Association="BookStoreModel.FK_BookMovements_Statuses">
+      <End Role="Status" EntitySet="Statuses" />
+      <End Role="BookMovement" EntitySet="BookMovements" />
+    </AssociationSet>
+    <EntitySet Name="Roles" EntityType="BookStoreModel.Role" />
+  </EntityContainer>
+  <EntityType Name="Purchase">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="BookId" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+  </EntityType>
+  <EntityType Name="Book">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Author" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Count" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="BookMovements" Relationship="BookStoreModel.FK_BookMovements_Books" FromRole="Book" ToRole="BookMovement" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Age" Type="Int32" />
+    <Property Name="Role" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="BookMovements" Relationship="BookStoreModel.FK_BookMovements_Users" FromRole="User" ToRole="BookMovement" />
+  </EntityType>
+  <EntityType Name="BookMovement">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" />
+    <Property Name="BookId" Type="Int32" Nullable="false" />
+    <Property Name="BookMovement1" Type="Int32" Nullable="false" />
+    <Property Name="BookCount" Type="Int32" Nullable="false" />
+    <Property Name="DateMovement" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Book" Relationship="BookStoreModel.FK_BookMovements_Books" FromRole="BookMovement" ToRole="Book" />
+    <NavigationProperty Name="User" Relationship="BookStoreModel.FK_BookMovements_Users" FromRole="BookMovement" ToRole="User" />
+    <NavigationProperty Name="BookMovementStatuses" Relationship="BookStoreModel.FK_BookMovementStatuses_BookMovements" FromRole="BookMovement" ToRole="BookMovementStatus" />
+    <Property Name="CurrentStatus" Type="Int32" />
+    <NavigationProperty Name="Status" Relationship="BookStoreModel.FK_BookMovements_Statuses" FromRole="BookMovement" ToRole="Status" />
+  </EntityType>
+  <EntityType Name="Status">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StatusName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="BookMovementStatuses" Relationship="BookStoreModel.FK_BookMovementStatuses_Statuses" FromRole="Status" ToRole="BookMovementStatus" />
+    <NavigationProperty Name="BookMovements" Relationship="BookStoreModel.FK_BookMovements_Statuses" FromRole="Status" ToRole="BookMovement" />
+  </EntityType>
+  <EntityType Name="BookMovementStatus">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BookMovementId" />
+      <PropertyRef Name="StatusId" />
+      <PropertyRef Name="InsertDate" />
+      <PropertyRef Name="Actual" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="BookMovementId" Type="Int32" Nullable="false" />
+    <Property Name="StatusId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="BookMovement" Relationship="BookStoreModel.FK_BookMovementStatuses_BookMovements" FromRole="BookMovementStatus" ToRole="BookMovement" />
+    <NavigationProperty Name="Status" Relationship="BookStoreModel.FK_BookMovementStatuses_Statuses" FromRole="BookMovementStatus" ToRole="Status" />
+    <Property Name="InsertDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Actual" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_BookMovements_Books">
+    <End Type="BookStoreModel.Book" Role="Book" Multiplicity="1" />
+    <End Type="BookStoreModel.BookMovement" Role="BookMovement" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Book">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BookMovement">
+        <PropertyRef Name="BookId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BookMovements_Users">
+    <End Type="BookStoreModel.User" Role="User" Multiplicity="0..1" />
+    <End Type="BookStoreModel.BookMovement" Role="BookMovement" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BookMovement">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BookMovementStatuses_BookMovements">
+    <End Type="BookStoreModel.BookMovement" Role="BookMovement" Multiplicity="1" />
+    <End Type="BookStoreModel.BookMovementStatus" Role="BookMovementStatus" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BookMovement">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BookMovementStatus">
+        <PropertyRef Name="BookMovementId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BookMovementStatuses_Statuses">
+    <End Type="BookStoreModel.Status" Role="Status" Multiplicity="1" />
+    <End Type="BookStoreModel.BookMovementStatus" Role="BookMovementStatus" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Status">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BookMovementStatus">
+        <PropertyRef Name="StatusId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BookMovements_Statuses">
+    <End Type="BookStoreModel.Status" Role="Status" Multiplicity="0..1" />
+    <End Type="BookStoreModel.BookMovement" Role="BookMovement" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Status">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BookMovement">
+        <PropertyRef Name="CurrentStatus" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Admin" />
+      <PropertyRef Name="Student" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Admin" Type="Boolean" Nullable="false" />
+    <Property Name="Student" Type="Boolean" Nullable="false" />
+  </EntityType>
+</Schema>

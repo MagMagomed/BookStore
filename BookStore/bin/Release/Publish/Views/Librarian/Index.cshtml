@@ -1,0 +1,27 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div style="margin-top: 20px; margin-left: 10px">
+  
+    <div id="PartialIndex">
+        @Html.Action("BookMovements", "Librarian")
+    </div>
+   
+</div>
+<script type="text/javascript">
+
+   
+    function BookMovements(Id,StatusId) {
+       
+        var jqxhr = $.post('@Url.Action("BookMovements")', { 'Id': Id, 'StatusId': StatusId});
+        jqxhr.done(function (data) {
+            $('#PartialIndex').html(data);
+        });
+        jqxhr.fail(function (data) {
+            $('#PartialIndex').html("ОШИБКА!");
+        });
+
+    }
+
+</script>
